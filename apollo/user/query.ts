@@ -1,4 +1,5 @@
 import { gql } from '@apollo/client';
+// mana shu yerdan query boshlanadi
 
 /**************************
  *         MEMBER         *
