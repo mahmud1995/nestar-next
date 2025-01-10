@@ -1,4 +1,5 @@
 import { gql } from '@apollo/client';
+// shu yerdan querylar boshlanadi
 
 /**************************
  *         MEMBER         *
