@@ -1,6 +1,7 @@
 import { gql } from '@apollo/client';
 // mana shu yerdan query boshlanadi
 
+
 /**************************
  *         MEMBER         *
  *************************/
@@ -154,6 +155,7 @@ export const GET_PROPERTIES = gql`
 				propertyRooms
 				propertyViews
 				propertyLikes
+				propertyComments
 				propertyRank
 				propertyImages
 				propertyDesc
@@ -176,21 +178,21 @@ export const GET_PROPERTIES = gql`
 					memberImage
 					memberAddress
 					memberDesc
-					memberWarnings
-					memberBlocks
 					memberProperties
-					memberRank
+					memberArticles
+					memberFollowers
+					memberFollowings
 					memberPoints
 					memberLikes
 					memberViews
+					memberComments
+					memberRank
+					memberWarnings
+					memberBlocks
 					deletedAt
 					createdAt
 					updatedAt
-				}
-				meLiked {
-					memberId
-					likeRefId
-					myFavorite
+					accessToken
 				}
 			}
 			metaCounter {
@@ -198,6 +200,7 @@ export const GET_PROPERTIES = gql`
 			}
 		}
 	}
+
 `;
 
 export const GET_AGENT_PROPERTIES = gql`
