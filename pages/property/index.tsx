@@ -41,13 +41,13 @@ const PropertyList: NextPage = ({ initialInput, ...props }: any) => {
 	const [likeTargetProperty] = useMutation(LIKE_TARGET_PROPERTY);
 
 	const {
-		loading: getPropertiesLoading,
-		data: getPropertiesData,
-		error: getPropertiesError,
-		refetch: getPropertiesRefetch,
+		loading: getPropertiesLoading, // olib kelyapti
+		data: getPropertiesData, // cache ga saqlayapti
+		error: getPropertiesError, // error hosil qilib beryapti
+		refetch: getPropertiesRefetch, // 
 	} = useQuery(GET_PROPERTIES, {
 		fetchPolicy: 'network-only',   
-		variables: {input: searchFilter },
+		variables: {input: searchFilter }, // searchFilter ishalayapti
 		notifyOnNetworkStatusChange: true,
 		onCompleted: (data: T) => {
 			setProperties(data?.getProperties?.list);

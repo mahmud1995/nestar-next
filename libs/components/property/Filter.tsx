@@ -144,7 +144,7 @@ const Filter = (props: FilterType) => {
 	}, [searchFilter]);
 
 	/** HANDLERS **/
-	const propertyLocationSelectHandler = useCallback(
+	const propertyLocationSelectHandler = useCallback( // browser cache da qurvoladi va qayta qurmedi
 		async (e: any) => {
 			try {
 				const isChecked = e.target.checked;
