@@ -9,13 +9,15 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { useReactiveVar } from '@apollo/client';
 import { userVar } from '../../../apollo/store';
+import { CustomJwtPayload } from '../../types/customJwtPayload';
 
 interface AgentCardProps {
 	agent: any;
+	likeMemberHandler: any;
 }
 
 const AgentCard = (props: AgentCardProps) => {
-	const { agent } = props;
+	const { agent, likeMemberHandler } = props;
 	const device = useDeviceDetect();
 	const user = useReactiveVar(userVar);
 	const imagePath: string = agent?.memberImage
@@ -25,6 +27,10 @@ const AgentCard = (props: AgentCardProps) => {
 	if (device === 'mobile') {
 		return <div>AGENT CARD</div>;
 	} else {
+		// function likeMemberHandler(user: CustomJwtPayload, _id: any) {
+		// 	throw new Error('Function not implemented.');
+		}
+
 		return (
 			<Stack className="agent-general-card">
 				<Link
@@ -64,7 +70,7 @@ const AgentCard = (props: AgentCardProps) => {
 							<RemoveRedEyeIcon />
 						</IconButton>
 						<Typography className="view-cnt">{agent?.memberViews}</Typography>
-						<IconButton color={'default'}>
+						<IconButton color={'default'} onClick={() => likeMemberHandler(user, agent?._id)}>
 							{agent?.meLiked && agent?.meLiked[0]?.myFavorite ? (
 								<FavoriteIcon color={'primary'} />
 							) : (
@@ -77,6 +83,5 @@ const AgentCard = (props: AgentCardProps) => {
 			</Stack>
 		);
 	}
-};
 
 export default AgentCard;
