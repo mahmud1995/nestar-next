@@ -138,7 +138,7 @@ const AgentList: NextPage = ({ initialInput, ...props }: any) => {
 						<Box component={'div'} className={'left'}>
 							<input
 								type="text"
-								placeholder={'Search for an agent'}
+								placeholder={'Search for an Agent'}
 								value={searchText}
 								onChange={(e: any) => setSearchText(e.target.value)}
 								onKeyDown={(event: any) => {
