@@ -7,8 +7,10 @@ import { REACT_APP_API_URL, propertySquare } from '../../config';
 import { PropertyInput } from '../../types/property/property.input';
 import axios from 'axios';
 import { getJwtToken } from '../../auth';
-import { sweetMixinErrorAlert } from '../../sweetAlert';
-import { useReactiveVar } from '@apollo/client';
+import { sweetErrorHandling, sweetMixinErrorAlert, sweetMixinSuccessAlert } from '../../sweetAlert';
+import { useMutation, useQuery, useReactiveVar } from '@apollo/client';
+import { CREATE_PROPERTY, UPDATE_PROPERTY } from '../../../apollo/user/mutation';
+import { GET_PROPERTY } from '../../../apollo/user/query';
 import { userVar } from '../../../apollo/store';
 
 const AddProperty = ({ initialValues, ...props }: any) => {
@@ -22,7 +24,20 @@ const AddProperty = ({ initialValues, ...props }: any) => {
 	const user = useReactiveVar(userVar);
 
 	/** APOLLO REQUESTS **/
-	let getPropertyData: any, getPropertyLoading: any;
+	const [createProperty] = useMutation(CREATE_PROPERTY);
+	const [updateProperty] = useMutation(UPDATE_PROPERTY);
+
+	const {
+		loading: getPropertyLoading,
+		data: getPropertyData,
+		error: getPropertiesError,
+		refetch: getPropertyRefetch,
+	} = useQuery (GET_PROPERTY, {
+		fetchPolicy: 'network-only',
+		variables: {
+			input: router.query.propertyId,
+		},
+	});
 
 	/** LIFECYCLES **/
 	useEffect(() => {
@@ -50,7 +65,7 @@ const AddProperty = ({ initialValues, ...props }: any) => {
 			const selectedFiles = inputRef.current.files;
 
 			if (selectedFiles.length == 0) return false;
-			if (selectedFiles.length > 5) throw new Error('Cannot upload more than 5 images!');
+			if (selectedFiles.length > 7) throw new Error('Cannot upload more than 7 images!');
 
 			formData.append(
 				'operations',
@@ -59,7 +74,7 @@ const AddProperty = ({ initialValues, ...props }: any) => {
 						imagesUploader(files: $files, target: $target)
 				  }`,
 					variables: {
-						files: [null, null, null, null, null],
+						files: [null, null, null, null, null,null,null],
 						target: 'property',
 					},
 				}),
@@ -72,6 +87,8 @@ const AddProperty = ({ initialValues, ...props }: any) => {
 					'2': ['variables.files.2'],
 					'3': ['variables.files.3'],
 					'4': ['variables.files.4'],
+					'5': ['variables.files.5'],
+					'6': ['variables.files.6'],
 				}),
 			);
 			for (const key in selectedFiles) {
@@ -114,10 +131,46 @@ const AddProperty = ({ initialValues, ...props }: any) => {
 			return true;
 		}
 	};
-
-	const insertPropertyHandler = useCallback(async () => {}, [insertPropertyData]);
-
-	const updatePropertyHandler = useCallback(async () => {}, [insertPropertyData]);
+	// InsertPropertyHandler
+	const insertPropertyHandler = useCallback(async () => {
+		try {
+			const result = await createProperty ({
+				variables: {
+					input: insertPropertyData,
+				},
+			});
+			await sweetMixinSuccessAlert("This Property has been created successfully!");
+			await router.push({
+				pathname: '/mypage', // MyPage ga yunaltirish
+				query: {
+					category: 'myProperties', // shu yerga push qiladi
+				},
+			});
+		} catch (err: any) {
+			sweetErrorHandling(err).then();
+		}
+	}, [insertPropertyData]);
+	// UpdatePropertyHandler
+	const updatePropertyHandler = useCallback(async () => {
+		try {
+			//@ts-ignore
+			insertPropertyData._id = getPropertyData?.getProperty?._id;
+			const result = await updateProperty ({
+				variables: {
+					input: insertPropertyData,
+				},
+			});
+			await sweetMixinSuccessAlert("This Property has been updated successfully!");
+			await router.push({
+				pathname: '/mypage',
+				query: {
+					category: 'myProperties',
+				},
+			});
+		} catch (err: any) {
+			sweetErrorHandling(err).then();
+		}
+	}, [insertPropertyData]);
 
 	if (user?.memberType !== 'AGENT') {
 		router.back();
