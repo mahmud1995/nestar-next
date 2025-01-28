@@ -180,7 +180,7 @@ const TuiEditor = () => {
 					variant="contained"
 					color="primary"
 					style={{ margin: '30px', width: '250px', height: '45px' }}
-					onClick={handleRegisterButton}
+					onClick={handleRegisterButton }
 				>
 					Register
 				</Button>
