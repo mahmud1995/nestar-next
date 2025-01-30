@@ -64,7 +64,7 @@ function createIsomorphicLink() {
 					console.log(`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`);
 					if (!message.includes('input')) sweetErrorAlert(message);
 				});
-			}
+			} 
 			if (networkError) console.log(`[Network error]: ${networkError}`);
 			// @ts-ignore
 			if (networkError?.statusCode === 401) {

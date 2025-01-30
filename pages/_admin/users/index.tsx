@@ -33,12 +33,13 @@ const AdminUsers: NextPage = ({ initialInquiry, ...props }: any) => {
 	const [searchType, setSearchType] = useState('ALL');
 
 	/** APOLLO REQUESTS **/
-	const [updateMemberByAdmin] = useMutation(UPDATE_MEMBER_BY_ADMIN);
+	const [updateMembersByAdmin] = useMutation(UPDATE_MEMBER_BY_ADMIN);
+
 	const { 
-		loading: getAllMembersByAdmin,
+		loading: getAllMembersByAdminLoading,
 		data: getAllMembersByAdminData,
 		error: getAllMembersByAdminError,
-		refetch: getAllMembersRefetch,
+		refetch: getAllMembersByAdminRefetch,
 	} = useQuery(GET_ALL_MEMBERS_BY_ADMIN, {
 		fetchPolicy: 'network-only',
 		variables: {input: membersInquiry},
@@ -51,13 +52,13 @@ const AdminUsers: NextPage = ({ initialInquiry, ...props }: any) => {
 
 	/** LIFECYCLES **/
 	useEffect(() => {
-		getAllMembersRefetch({input: membersInquiry}).then(); //Member List da option dan birortasini tanlaganda ishga tushadi
+		getAllMembersByAdminRefetch({input: membersInquiry}).then(); //Member List da option dan birortasini tanlaganda ishga tushadi
 	}, [membersInquiry]); //membersInquiry ning qiymati yangilanganda uzgartiradi
 
 	/** HANDLERS **/
 	const changePageHandler = async (event: unknown, newPage: number) => {
 		membersInquiry.page = newPage + 1;
-		await getAllMembersRefetch({input: membersInquiry });
+		await getAllMembersByAdminRefetch({input: membersInquiry });
 		setMembersInquiry({ ...membersInquiry });
 	};
 
@@ -65,7 +66,7 @@ const AdminUsers: NextPage = ({ initialInquiry, ...props }: any) => {
 	const changeRowsPerPageHandler = async (event: React.ChangeEvent<HTMLInputElement>) => {
 		membersInquiry.limit = parseInt(event.target.value, 10);
 		membersInquiry.page = 1;
-		await getAllMembersRefetch({input: membersInquiry});
+		await getAllMembersByAdminRefetch({input: membersInquiry});
 		setMembersInquiry({ ...membersInquiry });
 	};
 
@@ -104,14 +105,13 @@ const AdminUsers: NextPage = ({ initialInquiry, ...props }: any) => {
 
 	const updateMemberHandler = async (updateData: MemberUpdate) => {
 		try {
-			await updateMemberByAdmin({
+			await updateMembersByAdmin({
 				variables: {
 					input: updateData,
 				},
 			});
-
 			menuIconCloseHandler();
-			await getAllMembersRefetch({input: membersInquiry});
+			await getAllMembersByAdminRefetch({ input: membersInquiry });
 		} catch (err: any) {
 			sweetErrorHandling(err).then();
 		}
@@ -226,7 +226,7 @@ const AdminUsers: NextPage = ({ initialInquiry, ...props }: any) => {
 																text: '',
 															},
 														});
-														await getAllMembersRefetch({input: membersInquiry});
+														await getAllMembersByAdminRefetch({input: membersInquiry});
 													}}
 												/>
 											)}
