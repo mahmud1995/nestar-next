@@ -153,8 +153,10 @@ const CommunityArticleList = (props: CommunityArticleListProps) => {
 									<TableCell align="left">{article._id}</TableCell>
 									<TableCell align="left">
 										<Box component={'div'}>
+
 											{article.articleTitle}
-											<Link
+											{article.articleStatus === BoardArticleStatus.ACTIVE && (
+												<Link
 												href={`/community/detail?articleCategory=${article.articleCategory}&id=${article._id}`}
 												className={'img_box'}
 											>
@@ -163,7 +165,8 @@ const CommunityArticleList = (props: CommunityArticleListProps) => {
 														<OpenInBrowserRoundedIcon />
 													</Tooltip>
 												</IconButton>
-											</Link>
+											</Link>	
+											)}
 										</Box>
 									</TableCell>
 									<TableCell align="left">{article.articleCategory}</TableCell>
@@ -187,7 +190,7 @@ const CommunityArticleList = (props: CommunityArticleListProps) => {
 										<Moment format={'DD.MM.YY HH:mm'}>{article?.createdAt}</Moment>
 									</TableCell>
 									<TableCell align="center">
-										{article.articleStatus === 'DELETE' ? (
+										{article.articleStatus === BoardArticleStatus.DELETE ? (
 											<Button
 												variant="outlined"
 												sx={{ p: '3px', border: 'none', ':hover': { border: '1px solid #000000' } }}
