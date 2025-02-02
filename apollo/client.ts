@@ -86,7 +86,7 @@ function createIsomorphicLink() {
 				},
 			},
 			webSocketImpl: LoggingWebSocket,
-		}); // socket io link
+		}); // socket
 
 		const errorLink = onError(({ graphQLErrors, networkError, response }) => {
 			if (graphQLErrors) {
