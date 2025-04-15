@@ -26,3 +26,17 @@ const App = ({ Component, pageProps }: AppProps) => {
 };
 
 export default appWithTranslation(App);
+
+ 
+
+/*
+Redux - malumotlarni saqlash, backenddan kelayotgan malumotlarni tugri interfaceda
+	saqlanayotganini biz redux architecture orqali hosil qilganmiz 
+	==> malumotlar tugri typelarda kelishini taminlash & data ni redux single storage da saqlash mechanism ni joriy
+
+React Query - backend dan 100% aniq format data qabul qilish fazasi yaratilgan bulsagina.. 
+	chunki react query backenddan olgan malumotni tekshirmasdan tugridan tugri cachega auto save qiladigan STATE MANAGEMENT TOOL hisoblanadi
+	NESTAR - OK ==> backenddi monorepo Project - default serveri GraphQL API Backend server - DTO lar orqali 100% tugri backend serverni qurib olish hosil qb beradi
+
+
+*/

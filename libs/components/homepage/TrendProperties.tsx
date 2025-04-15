@@ -8,6 +8,12 @@ import { Autoplay, Navigation, Pagination } from 'swiper';
 import { Property } from '../../types/property/property';
 import { PropertiesInquiry } from '../../types/property/property.input';
 import TrendPropertyCard from './TrendPropertyCard';
+import { useMutation, useQuery } from '@apollo/client';
+import { GET_PROPERTIES } from '../../../apollo/user/query';
+import { T } from '../../types/common';
+import { LIKE_TARGET_PROPERTY } from '../../../apollo/user/mutation';
+import { sweetMixinErrorAlert, sweetTopSmallSuccessAlert } from '../../sweetAlert';
+import { Message } from '../../enums/common.enum';
 
 interface TrendPropertiesProps {
 	initialInput: PropertiesInquiry;
@@ -19,9 +25,41 @@ const TrendProperties = (props: TrendPropertiesProps) => {
 	const [trendProperties, setTrendProperties] = useState<Property[]>([]);
 
 	/** APOLLO REQUESTS **/
-	/** HANDLERS **/
+	const [likeTargetProperty] = useMutation(LIKE_TARGET_PROPERTY);
+	const {
+		loading: getPropertiesLoading,
+		data: getProperties, 
+		error: getPropertiesError,
+		refetch: getPropertiesRefetch,
 
-	if (trendProperties) console.log('trendProperties:', trendProperties);
+	} = useQuery(GET_PROPERTIES, {
+		fetchPolicy: "cache-and-network",
+		variables: {input: initialInput},
+		notifyOnNetworkStatusChange: true,
+		onCompleted: (data: T) => { 
+			setTrendProperties(data?.getProperties.list);
+		},
+	});
+	/** HANDLERS **/
+	const likePropertyHandler = async (user: T, id: string) => {
+		try {
+			if(!id) return; //tekshirish mantiqi
+			if(!user._id) throw new Error(Message.NOT_AUTHENTICATED);//tekshirish mantiqi
+
+			// execute likeTargetProperty Mutation
+			await likeTargetProperty({ 
+				variables: {input: id}
+			});
+			// execute getPropertiesRefetch
+			await getPropertiesRefetch({ input: initialInput });
+			
+			await sweetTopSmallSuccessAlert("success", 800);
+		} catch(err: any) {
+			console.log("Error, likePropertyHandler:", err.message);
+			sweetMixinErrorAlert(err.message).then();
+		}
+	}
+	if (trendProperties) console.log('trendProperties: +++', trendProperties);
 	if (!trendProperties) return null;
 
 	if (device === 'mobile') {
@@ -47,7 +85,7 @@ const TrendProperties = (props: TrendPropertiesProps) => {
 								{trendProperties.map((property: Property) => {
 									return (
 										<SwiperSlide key={property._id} className={'trend-property-slide'}>
-											<TrendPropertyCard property={property} />
+											<TrendPropertyCard property={property} likePropertyHandler={likePropertyHandler} />
 										</SwiperSlide>
 									);
 								})}
@@ -96,7 +134,7 @@ const TrendProperties = (props: TrendPropertiesProps) => {
 								{trendProperties.map((property: Property) => {
 									return (
 										<SwiperSlide key={property._id} className={'trend-property-slide'}>
-											<TrendPropertyCard property={property} />
+											<TrendPropertyCard property={property} likePropertyHandler={likePropertyHandler} />
 										</SwiperSlide>
 									);
 								})}
@@ -108,7 +146,7 @@ const TrendProperties = (props: TrendPropertiesProps) => {
 		);
 	}
 };
-
+// Kup like yiggan
 TrendProperties.defaultProps = {
 	initialInput: {
 		page: 1,

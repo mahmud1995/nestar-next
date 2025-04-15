@@ -10,7 +10,13 @@ import { PropertiesInquiry } from '../../libs/types/property/property.input';
 import { Property } from '../../libs/types/property/property';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
-import { Direction } from '../../libs/enums/common.enum';
+import { Direction, Message } from '../../libs/enums/common.enum';
+import { useMutation, useQuery } from '@apollo/client';
+import { T } from '../../libs/types/common';
+import { GET_PROPERTIES } from '../../apollo/user/query';
+import { LIKE_TARGET_PROPERTY } from '../../apollo/user/mutation';
+// import React from 'react';
+import { sweetTopSmallSuccessAlert, sweetMixinErrorAlert } from '../../libs/sweetAlert';
 
 export const getStaticProps = async ({ locale }: any) => ({
 	props: {
@@ -32,6 +38,22 @@ const PropertyList: NextPage = ({ initialInput, ...props }: any) => {
 	const [filterSortName, setFilterSortName] = useState('New');
 
 	/** APOLLO REQUESTS **/
+	const [likeTargetProperty] = useMutation(LIKE_TARGET_PROPERTY);
+
+	const {
+		loading: getPropertiesLoading, // olib kelyapti
+		data: getPropertiesData, // cache ga saqlayapti
+		error: getPropertiesError, // error hosil qilib beryapti
+		refetch: getPropertiesRefetch, // 
+	} = useQuery(GET_PROPERTIES, {
+		fetchPolicy: 'network-only',   
+		variables: {input: searchFilter }, // searchFilter ishalayapti
+		notifyOnNetworkStatusChange: true,
+		onCompleted: (data: T) => {
+			setProperties(data?.getProperties?.list);
+			setTotal(data?.getProperties?.metaCounter[0]?.total);
+		},
+	})
 
 	/** LIFECYCLES **/
 	useEffect(() => {
@@ -41,9 +63,16 @@ const PropertyList: NextPage = ({ initialInput, ...props }: any) => {
 		}
 
 		setCurrentPage(searchFilter.page === undefined ? 1 : searchFilter.page);
-	}, [router]);
+	}, [router]); // manashu router console ga graphql 
 
-	useEffect(() => {}, [searchFilter]);
+	useEffect(() => {
+		console.log("searchFilter", searchFilter);
+		// BACKEND REFETCH
+		// getPropertiesRefetch({ input: searchFilter }).then();
+	}, [searchFilter]);
+
+
+
 
 	/** HANDLERS **/
 	const handlePaginationChange = async (event: ChangeEvent<unknown>, value: number) => {
@@ -56,6 +85,25 @@ const PropertyList: NextPage = ({ initialInput, ...props }: any) => {
 			},
 		);
 		setCurrentPage(value);
+	};
+
+	const likePropertyHandler = async (user: T, id: string) => {
+		try {
+			if(!id) return; //tekshirish mantiqi
+			if(!user._id) throw new Error(Message.NOT_AUTHENTICATED);//tekshirish mantiqi
+
+			// execute likeTargetProperty Mutation
+			await likeTargetProperty({ 
+				variables: {input: id}
+			});
+			// execute getPropertiesRefetch
+			await getPropertiesRefetch({ input: initialInput });
+			
+			await sweetTopSmallSuccessAlert("success", 800);
+		} catch(err: any) {
+			console.log("Error, likePropertyHandler:", err.message);
+			sweetMixinErrorAlert(err.message).then();
+		}
 	};
 
 	const sortingClickHandler = (e: MouseEvent<HTMLElement>) => {
@@ -140,7 +188,7 @@ const PropertyList: NextPage = ({ initialInput, ...props }: any) => {
 									</div>
 								) : (
 									properties.map((property: Property) => {
-										return <PropertyCard property={property} key={property?._id} />;
+										return <PropertyCard property={property} likePropertyHandler={likePropertyHandler} key={property?._id} />;
 									})
 								)}
 							</Stack>

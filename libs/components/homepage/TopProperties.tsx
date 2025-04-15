@@ -8,6 +8,12 @@ import { Autoplay, Navigation, Pagination } from 'swiper';
 import TopPropertyCard from './TopPropertyCard';
 import { PropertiesInquiry } from '../../types/property/property.input';
 import { Property } from '../../types/property/property';
+import { useMutation, useQuery } from '@apollo/client';
+import { GET_PROPERTIES } from '../../../apollo/user/query';
+import { T } from '../../types/common';
+import { LIKE_TARGET_PROPERTY } from '../../../apollo/user/mutation';
+import { Message } from '../../enums/common.enum';
+import { sweetMixinErrorAlert, sweetTopSmallSuccessAlert } from '../../sweetAlert';
 
 interface TopPropertiesProps {
 	initialInput: PropertiesInquiry;
@@ -19,8 +25,42 @@ const TopProperties = (props: TopPropertiesProps) => {
 	const [topProperties, setTopProperties] = useState<Property[]>([]);
 
 	/** APOLLO REQUESTS **/
+	const [likeTargetProperty] = useMutation(LIKE_TARGET_PROPERTY);
+	const {
+			loading: getPropertiesLoading,
+			data: getProperties, 
+			error: getPropertiesError,
+			refetch: getPropertiesRefetch,
+	
+		} = useQuery(GET_PROPERTIES, {
+			fetchPolicy: "cache-and-network",
+			variables: {input: initialInput},
+			notifyOnNetworkStatusChange: true,
+			onCompleted: (data: T) => { 
+				setTopProperties(data?.getProperties.list);
+			},
+		});
 	/** HANDLERS **/
+	const likePropertyHandler = async (user: T, id: string) => {
+		try {
+			if(!id) return; //tekshirish mantiqi
+			if(!user._id) throw new Error(Message.NOT_AUTHENTICATED);//tekshirish mantiqi
 
+			// execute likeTargetProperty Mutation
+			await likeTargetProperty({ 
+				variables: {input: id}
+			});
+			// execute getPropertiesRefetch
+			await getPropertiesRefetch({ input: initialInput });
+			
+			await sweetTopSmallSuccessAlert("success", 800);
+		} catch(err: any) {
+			console.log("Error, likePropertyHandler:", err.message);
+			sweetMixinErrorAlert(err.message).then();
+		}
+	}
+	// if (trendProperties) console.log('trendProperties: +++', trendProperties);
+	// if (!trendProperties) return null;
 	if (device === 'mobile') {
 		return (
 			<Stack className={'top-properties'}>
@@ -39,7 +79,7 @@ const TopProperties = (props: TopPropertiesProps) => {
 							{topProperties.map((property: Property) => {
 								return (
 									<SwiperSlide className={'top-property-slide'} key={property?._id}>
-										<TopPropertyCard property={property} />
+										<TopPropertyCard property={property} likePropertyHandler={likePropertyHandler} />
 									</SwiperSlide>
 								);
 							})}
@@ -82,7 +122,7 @@ const TopProperties = (props: TopPropertiesProps) => {
 							{topProperties.map((property: Property) => {
 								return (
 									<SwiperSlide className={'top-property-slide'} key={property?._id}>
-										<TopPropertyCard property={property} />
+										<TopPropertyCard property={property} likePropertyHandler={likePropertyHandler}/>
 									</SwiperSlide>
 								);
 							})}
