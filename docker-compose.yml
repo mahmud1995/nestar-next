@@ -9,7 +9,7 @@ services:
       - PORT=3000
 
     volumes:
-      - ./:/usr/src/nestar-next
+      - .:/usr/src/nestar-next
     working_dir: /usr/src/nestar-next
 
     networks:
