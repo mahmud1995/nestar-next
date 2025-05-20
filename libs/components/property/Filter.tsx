@@ -48,103 +48,117 @@ const Filter = (props: FilterType) => {
 		if (searchFilter?.search?.locationList?.length == 0) {
 			delete searchFilter.search.locationList;
 			setShowMore(false);
-			router.push(`/property?input=${
-				JSON.stringify({
-					...searchFilter,
-					search: {
-						...searchFilter.search,
-					},
-				}) //queryparams
-			}`, `/property?input=${
-				JSON.stringify({
-					...searchFilter,
-					search: {
-						...searchFilter.search,
-					},
-				})
-			}`, { scroll: false }).then();
+			router
+				.push(
+					`/property?input=${
+						JSON.stringify({
+							...searchFilter,
+							search: {
+								...searchFilter.search,
+							},
+						}) //queryparams
+					}`,
+					`/property?input=${JSON.stringify({
+						...searchFilter,
+						search: {
+							...searchFilter.search,
+						},
+					})}`,
+					{ scroll: false },
+				)
+				.then();
 		}
 
 		if (searchFilter?.search?.typeList?.length == 0) {
 			delete searchFilter.search.typeList;
-			router.push(`/property?input=${
-				JSON.stringify({
-					...searchFilter,
-					search: {
-						...searchFilter.search,
-					},
-			})}`, `/property?input=${
-				JSON.stringify({
-					...searchFilter,
-					search: {
-						...searchFilter.search,
-					},
-				})
-			}`, { scroll: false }).then();
+			router
+				.push(
+					`/property?input=${JSON.stringify({
+						...searchFilter,
+						search: {
+							...searchFilter.search,
+						},
+					})}`,
+					`/property?input=${JSON.stringify({
+						...searchFilter,
+						search: {
+							...searchFilter.search,
+						},
+					})}`,
+					{ scroll: false },
+				)
+				.then();
 		}
 
 		if (searchFilter?.search?.roomsList?.length == 0) {
 			delete searchFilter.search.roomsList;
-			router.push(`/property?input=${
-				JSON.stringify({
-					...searchFilter,
-					search: {
-						...searchFilter.search,
-					},
-				})
-			}`, `/property?input=${
-				JSON.stringify({
-					...searchFilter,
-					search: {
-						...searchFilter.search,
-					},
-				})
-			}`, { scroll: false }).then();
+			router
+				.push(
+					`/property?input=${JSON.stringify({
+						...searchFilter,
+						search: {
+							...searchFilter.search,
+						},
+					})}`,
+					`/property?input=${JSON.stringify({
+						...searchFilter,
+						search: {
+							...searchFilter.search,
+						},
+					})}`,
+					{ scroll: false },
+				)
+				.then();
 		}
 
 		if (searchFilter?.search?.options?.length == 0) {
 			delete searchFilter.search.options;
-			router.push(`/property?input=${
-				JSON.stringify({
-					...searchFilter,
-					search: {
-						...searchFilter.search,
-					},
-				})
-			}`, `/property?input=${
-				JSON.stringify({
-					...searchFilter,
-					search: {
-						...searchFilter.search,
-					},
-				})
-			}`, { scroll: false }).then();
+			router
+				.push(
+					`/property?input=${JSON.stringify({
+						...searchFilter,
+						search: {
+							...searchFilter.search,
+						},
+					})}`,
+					`/property?input=${JSON.stringify({
+						...searchFilter,
+						search: {
+							...searchFilter.search,
+						},
+					})}`,
+					{ scroll: false },
+				)
+				.then();
 		}
 
 		if (searchFilter?.search?.bedsList?.length == 0) {
 			delete searchFilter.search.bedsList;
-			router.push(`/property?input=${
-				JSON.stringify({
-					...searchFilter,
-					search: {
-						...searchFilter.search,
-					},
-				})
-			}`, `/property?input=${
-				JSON.stringify({
-					...searchFilter,
-					search: {
-						...searchFilter.search,
-					},
-				})
-			}`, { scroll: false }).then();
+			router
+				.push(
+					`/property?input=${JSON.stringify({
+						...searchFilter,
+						search: {
+							...searchFilter.search,
+						},
+					})}`,
+					`/property?input=${JSON.stringify({
+						...searchFilter,
+						search: {
+							...searchFilter.search,
+						},
+					})}`,
+					{ scroll: false },
+				)
+				.then();
 		}
 
 		if (searchFilter?.search?.locationList) setShowMore(true);
 	}, [searchFilter]);
 
 	/** HANDLERS **/
-	const propertyLocationSelectHandler = useCallback( // browser cache da qurvoladi va qayta qurmedi
+	const propertyLocationSelectHandler = useCallback(
+		// browser cache da qurvoladi va qayta qurmedi
 		async (e: any) => {
 			try {
 				const isChecked = e.target.checked;
@@ -564,7 +578,7 @@ const Filter = (props: FilterType) => {
 					</p>
 					<Stack
 						className={`property-location`}
-						style={{ height: showMore ? '253px' : '115px' }}
+						style={{ height: showMore ? '253px' : '155px' }}
 						onMouseEnter={() => setShowMore(true)}
 						onMouseLeave={() => {
 							if (!searchFilter?.search?.locationList) {

@@ -62,7 +62,7 @@ const withLayoutMain = (Component: any) => {
 						</Stack>
 
 						<Stack className={'header-main'}>
-							<FiberContainer />
+							{/* <FiberContainer /> */}
 							<Stack className={'container'}>
 								<HeaderFilter />
 							</Stack>
