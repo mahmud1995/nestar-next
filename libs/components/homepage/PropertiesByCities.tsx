@@ -107,7 +107,9 @@ const PropertiesByCities = (props: CityFilterProps) => {
 										<CardMedia
 											component="img"
 											height="140"
-											image={`img/banner/cities/${location.toLowerCase()}.webp`}
+											// we will change toLowerCase() ==> toUpperCase()
+											// image={`img/banner/cities/${location.toLowerCase()}.webp`}
+											image={`img/banner/cities/${location.toUpperCase()}.webp`}
 											alt={location}
 											className={'image'}
 										/>
